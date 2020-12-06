@@ -54,6 +54,7 @@ def puzzle1():
     passports = regexer()
 
     counter = 0
+    good_passports = []
 
     for passport in passports:
         for e in passport:
@@ -68,14 +69,104 @@ def puzzle1():
 
         if False not in valid:
             if len(valid) == 7:
-                counter += 1
+                good_passports.append(passport)
 
-    return counter
+    return good_passports
+
+
+def puzzle2():
+
+    passports = puzzle1()
+
+    # Check birth year
+    # print(len(passports))
+    for passport in passports:
+        for e in passport:
+            if e.startswith("byr"):
+                if int(e[4:]) < 1920 or int(e[4:]) > 2002:
+                    passports.remove(passport)
+
+    # Check issue year
+    # print(len(passports))
+    for passport in passports:
+        for e in passport:
+            if e.startswith("iyr"):
+                if int(e[4:]) < 2010 or int(e[4:]) > 2020:
+                    passports.remove(passport)
+
+    # Check expire year
+    # print(len(passports))
+    for passport in passports:
+        for e in passport:
+            if e.startswith("eyr"):
+                if int(e[4:]) < 2020 or int(e[4:]) > 2030:
+                    passports.remove(passport)
+
+    # Check height in cm
+    # print(len(passports))
+    for passport in passports:
+        for e in passport:
+            if e.startswith("hgt"):
+                if e.endswith("cm"):
+                    h_cm = re.findall(r"\d+", e)
+                    if int(h_cm[0]) < 150 or int(h_cm[0]) > 193:
+                        passports.remove(passport)
+
+    # Check height in in
+    # print(len(passports))
+    for passport in passports:
+        for e in passport:
+            if e.startswith("hgt"):
+                if e.endswith("in"):
+                    h_in = re.findall(r"\d+", e)
+                    if int(h_in[0]) < 59 or int(h_in[0]) > 76:
+                        passports.remove(passport)
+
+    # Check for invalid height
+    # print(len(passports))
+    for passport in passports:
+        for e in passport:
+            if e.startswith("hgt"):
+                if not re.match(r"hgt:\d*(cm|in)", e):
+                    passports.remove(passport)
+
+    # Check hair color
+    # print(len(passports))
+    for passport in passports:
+        for e in passport:
+            if e.startswith("hcl"):
+                if not re.match(r"hcl\:\#[a-f,0-9]{6}", e):
+                    passports.remove(passport)
+
+    # Check eye color
+    # print(len(passports))
+    required = ("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
+    for passport in passports:
+        for e in passport:
+            if e.startswith("ecl"):
+                if not re.match(
+                    r"ecl:amb|ecl:blu|ecl:brn|ecl:gry|ecl:grn|ecl:hzl|ecl:oth", e
+                ):
+                    passports.remove(passport)
+
+    # Check passport ID
+    # print(len(passports))
+    for passport in passports:
+        for e in passport:
+            if e.startswith("pid"):
+                if not re.match(r"pid:[0-9]{9}", e):
+                    passports.remove(passport)
+
+    for passport in passports:
+        for e in passport:
+            if e.startswith("pid"):
+                if len(e) > 13:
+                    passports.remove(passport)
+
+    return passports
 
 
 if __name__ == "__main__":
-    print(puzzle1())
 
-
-# if all([x.startswith(y) for y in required]):
-#                 print(x)
+    print(len(puzzle1()))
+    print(len(puzzle2()))
